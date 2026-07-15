@@ -34,6 +34,7 @@ const authLimiter = rateLimit({
 const { db, dbPromise, checkDatabaseConnection } = require('./db');
 const { runDueCampaigns } = require('./services/scheduling');
 const { deliverCampaign } = require('./services/campaignDelivery');
+const { runMigrations } = require('./services/migrations');
 
 // Routes
 const authRoutes = require('./routes/auth');
@@ -103,9 +104,10 @@ async function startServer() {
   try {
     validateCoreConfig(config);
     await checkDatabaseConnection();
-    console.log('Connected to MySQL database');
-
     const promiseDb = await dbPromise;
+    await runMigrations(promiseDb);
+    console.log('Connected to MySQL database; migrations are current');
+
     let schedulerRunning = false;
     const scheduler = setInterval(async () => {
       if (schedulerRunning) return;
@@ -119,7 +121,7 @@ async function startServer() {
       console.log(`Server running on port http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('Unable to start: MySQL connection failed. Check that MySQL is running and the DB_* settings are correct.');
+    console.error('Unable to start: database connection or migration failed. Check MySQL, DB_* settings, and migration permissions.');
     console.error(error.message);
     process.exitCode = 1;
     return null;

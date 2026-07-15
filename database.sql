@@ -99,3 +99,10 @@ CREATE INDEX idx_sms_job_id ON sms_recipients(job_id);
 CREATE INDEX idx_sms_status ON sms_recipients(status);
 CREATE INDEX idx_sms_message_sid ON sms_logs(message_sid);
 CREATE INDEX idx_sms_recipient_id ON sms_logs(recipient_id);
+
+-- Fresh databases already include the scheduling columns from migration 001.
+CREATE TABLE schema_migrations (
+  name VARCHAR(255) PRIMARY KEY,
+  applied_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+INSERT INTO schema_migrations (name) VALUES ('001_email_scheduling.sql');

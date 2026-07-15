@@ -8,6 +8,7 @@ const { inspectDomain, preflightRecipients } = require('../services/emailPreflig
 const { campaignSummary } = require('../services/campaignSummary');
 const { analyzeRecipientRows } = require('../services/csvRecipients');
 const { canTransition, parseSchedule, runDueCampaigns } = require('../services/scheduling');
+const { pendingMigrations } = require('../services/migrations');
 
 test('escapes recipient data before inserting it into email HTML', () => {
   assert.equal(personalize('Hello {{Name}}', { name: '<script>alert(1)</script>' }), 'Hello &lt;script&gt;alert(1)&lt;/script&gt;');
@@ -136,4 +137,11 @@ test('scheduler claims each due campaign before delivery', async () => {
   const processed = await runDueCampaigns(db, async (_db, id) => delivered.push(id));
   assert.equal(processed, 1);
   assert.deepEqual(delivered, [7]);
+});
+
+test('orders migrations and skips files already applied', () => {
+  assert.deepEqual(
+    pendingMigrations(['002_second.sql', 'README.md', '001_first.sql'], ['001_first.sql']),
+    ['002_second.sql']
+  );
 });
