@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0] - 2026-07-15
+
+### Added
+- Workspace settings now offer four accessible accent-color presets.
+- SMS navigation visibility can be toggled without deleting SMS data or disabling its direct route.
+- Preferences persist locally and apply consistently across authenticated workspaces.
+
 ## [1.5.1] - 2026-07-15
 
 ### Changed

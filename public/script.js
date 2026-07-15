@@ -1,5 +1,36 @@
 // API base URL
 const API_BASE = '/api';
+const PREFERENCES_KEY = 'sendchap_preferences';
+const DEFAULT_PREFERENCES = { accent: 'indigo', showSms: true };
+const ACCENT_PRESETS = {
+    indigo: { brand: '#5b5cf0', dark: '#4849d8', soft: '#eeeeff' },
+    blue: { brand: '#1570ef', dark: '#175cd3', soft: '#eff8ff' },
+    emerald: { brand: '#079455', dark: '#067647', soft: '#ecfdf3' },
+    rose: { brand: '#e31b54', dark: '#c01048', soft: '#fff1f3' }
+};
+
+function getPreferences() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(PREFERENCES_KEY));
+        return {
+            accent: ACCENT_PRESETS[saved?.accent] ? saved.accent : DEFAULT_PREFERENCES.accent,
+            showSms: typeof saved?.showSms === 'boolean' ? saved.showSms : DEFAULT_PREFERENCES.showSms
+        };
+    } catch (error) {
+        return { ...DEFAULT_PREFERENCES };
+    }
+}
+
+function applyPreferences(preferences) {
+    const colors = ACCENT_PRESETS[preferences.accent] || ACCENT_PRESETS.indigo;
+    const root = document.documentElement;
+    root.style.setProperty('--brand', colors.brand);
+    root.style.setProperty('--brand-dark', colors.dark);
+    root.style.setProperty('--brand-soft', colors.soft);
+    document.querySelectorAll('[data-page="sms"]').forEach(link => { link.hidden = !preferences.showSms; });
+}
+
+applyPreferences(getPreferences());
 
 async function loadAppVersion() {
     const labels = document.querySelectorAll('[data-app-version]');
@@ -895,13 +926,45 @@ if (window.location.pathname === '/sms') {
     loadSmsCampaigns();
 }
 
+const settingsModal = document.getElementById('settingsModal');
+const settingsForm = document.getElementById('settingsForm');
+
+function closeSettings() {
+    if (settingsModal) settingsModal.style.display = 'none';
+}
+
+function openSettings() {
+    if (!settingsModal || !settingsForm) return;
+    const preferences = getPreferences();
+    const accentInput = settingsForm.querySelector(`[name="accent"][value="${preferences.accent}"]`);
+    if (accentInput) accentInput.checked = true;
+    settingsForm.querySelector('#showSmsPreference').checked = preferences.showSms;
+    settingsModal.style.display = 'block';
+    settingsModal.querySelector('input:checked')?.focus();
+}
+
+settingsForm?.addEventListener('submit', event => {
+    event.preventDefault();
+    const preferences = {
+        accent: new FormData(settingsForm).get('accent') || DEFAULT_PREFERENCES.accent,
+        showSms: settingsForm.querySelector('#showSmsPreference').checked
+    };
+    localStorage.setItem(PREFERENCES_KEY, JSON.stringify(preferences));
+    applyPreferences(preferences);
+    closeSettings();
+    showMessage('Workspace preferences saved.', 'success');
+});
+
+document.querySelectorAll('.settings-close, .settings-cancel').forEach(button => button.addEventListener('click', closeSettings));
+settingsModal?.addEventListener('click', event => { if (event.target === settingsModal) closeSettings(); });
+document.addEventListener('keydown', event => { if (event.key === 'Escape') closeSettings(); });
+
 // Sidebar links use real URLs so navigation still works without JavaScript.
-// Only the unfinished settings item needs client-side handling.
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', (e) => {
         if (link.dataset.page === 'settings') {
             e.preventDefault();
-            showMessage('Settings coming soon!', 'info');
+            openSettings();
         }
     });
 });

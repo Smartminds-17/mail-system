@@ -74,6 +74,28 @@
         </div>
     </div>
 
+    <div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <div class="modal-content settings-dialog">
+            <div class="modal-header">
+                <div><p class="page-kicker">Preferences</p><h3 id="settingsTitle">Personalize your workspace</h3></div>
+                <button type="button" class="settings-close" aria-label="Close settings">&times;</button>
+            </div>
+            <form id="settingsForm">
+                <fieldset class="settings-fieldset">
+                    <legend>Accent color</legend><p>Choose the highlight color used across your workspace.</p>
+                    <div class="color-options">
+                        <label class="color-option"><input type="radio" name="accent" value="indigo"><span class="color-swatch swatch-indigo"></span><span>Indigo</span></label>
+                        <label class="color-option"><input type="radio" name="accent" value="blue"><span class="color-swatch swatch-blue"></span><span>Blue</span></label>
+                        <label class="color-option"><input type="radio" name="accent" value="emerald"><span class="color-swatch swatch-emerald"></span><span>Emerald</span></label>
+                        <label class="color-option"><input type="radio" name="accent" value="rose"><span class="color-swatch swatch-rose"></span><span>Rose</span></label>
+                    </div>
+                </fieldset>
+                <label class="preference-row" for="showSmsPreference"><span><strong>Show SMS workspace</strong><small>Display SMS in the sidebar. Hiding it does not remove your data.</small></span><input id="showSmsPreference" type="checkbox" role="switch"></label>
+                <div class="modal-actions"><button type="button" class="cancel-btn settings-cancel">Cancel</button><button type="submit" class="primary-btn">Save preferences</button></div>
+            </form>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

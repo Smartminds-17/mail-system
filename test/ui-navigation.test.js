@@ -25,3 +25,18 @@ test('authenticated sidebars expose a runtime version placeholder', () => {
     assert.doesNotMatch(html, /Campaign workspace|Securely connected/);
   }
 });
+
+test('authenticated workspaces include accessible persistent settings', () => {
+  for (const page of ['dashboard.html', 'sms.html']) {
+    const html = fs.readFileSync(`public/${page}`, 'utf8');
+    assert.match(html, /id="settingsModal"[^>]+role="dialog"[^>]+aria-modal="true"/);
+    assert.match(html, /name="accent" value="emerald"/);
+    assert.match(html, /id="showSmsPreference"[^>]+role="switch"/);
+  }
+
+  const script = fs.readFileSync('public/script.js', 'utf8');
+  assert.match(script, /PREFERENCES_KEY = 'sendchap_preferences'/);
+  assert.match(script, /localStorage\.setItem\(PREFERENCES_KEY/);
+  assert.match(script, /querySelectorAll\('\[data-page="sms"\]'\)/);
+  assert.doesNotMatch(script, /Settings coming soon/);
+});
