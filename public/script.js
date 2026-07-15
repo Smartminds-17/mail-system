@@ -1,6 +1,21 @@
 // API base URL
 const API_BASE = '/api';
 
+async function loadAppVersion() {
+    const labels = document.querySelectorAll('[data-app-version]');
+    if (!labels.length) return;
+    try {
+        const response = await fetch(`${API_BASE}/version`);
+        if (!response.ok) return;
+        const { version } = await response.json();
+        labels.forEach(label => { label.textContent = `Version ${version}`; });
+    } catch (error) {
+        // Version metadata is non-critical; keep the quiet fallback label.
+    }
+}
+
+loadAppVersion();
+
 if (window.Chart) {
     Chart.defaults.font.family = "'Hanken Grotesk', sans-serif";
     Chart.defaults.color = '#667085';

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.0] - 2026-07-15
+
+### Added
+- Authenticated sidebars now display the running application version from server metadata.
+
 ## [1.4.3] - 2026-07-15
 
 ### Fixed

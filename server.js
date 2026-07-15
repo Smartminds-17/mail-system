@@ -3,6 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const { loadConfig, validateCoreConfig } = require('./config');
+const { version } = require('./package.json');
 
 const app = express();
 const config = loadConfig();
@@ -72,6 +73,10 @@ app.get("/track/open/:id", async (req, res) => {
 // Serve frontend
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
+});
+
+app.get('/api/version', (req, res) => {
+  res.json({ version });
 });
 
 app.get('/', (req, res) => {

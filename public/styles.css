@@ -128,6 +128,7 @@ p { color: var(--muted); }
 .nav-link:hover { color: #fff; background: rgba(255,255,255,.06); }
 .nav-link.active { color: #fff; background: var(--nav-soft); box-shadow: inset 3px 0 var(--brand); }
 .sidebar-foot { margin-top: auto; padding: 16px 12px 0; color: #667085; font-size: .78rem; border-top: 1px solid #344054; }
+.app-version { display: inline-block; margin-top: 7px; color: #98a2b3; font-size: .7rem; letter-spacing: .04em; }
 .main-content { min-height: 100vh; margin-left: 248px; background: var(--canvas); }
 .main-content .container { width: min(100% - 64px, 1240px); }
 .dashboard-header { display: flex; align-items: center; justify-content: space-between; padding: 42px 0 26px; }
