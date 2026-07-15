@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.1] - 2026-07-15
+
+### Changed
+- Sidebar footers now show only the application version.
+
 ## [1.5.0] - 2026-07-15
 
 ### Added

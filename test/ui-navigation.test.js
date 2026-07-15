@@ -22,5 +22,6 @@ test('authenticated sidebars expose a runtime version placeholder', () => {
   for (const page of ['dashboard.html', 'sms.html']) {
     const html = fs.readFileSync(`public/${page}`, 'utf8');
     assert.match(html, /data-app-version/);
+    assert.doesNotMatch(html, /Campaign workspace|Securely connected/);
   }
 });
