@@ -8,7 +8,7 @@ const { inspectDomain, preflightRecipients } = require('../services/emailPreflig
 const { campaignSummary } = require('../services/campaignSummary');
 const { analyzeRecipientRows } = require('../services/csvRecipients');
 const { canTransition, parseSchedule, runDueCampaigns } = require('../services/scheduling');
-const { pendingMigrations } = require('../services/migrations');
+const { migrationAlreadyPresent, pendingMigrations } = require('../services/migrations');
 
 test('escapes recipient data before inserting it into email HTML', () => {
   assert.equal(personalize('Hello {{Name}}', { name: '<script>alert(1)</script>' }), 'Hello &lt;script&gt;alert(1)&lt;/script&gt;');
@@ -144,4 +144,12 @@ test('orders migrations and skips files already applied', () => {
     pendingMigrations(['002_second.sql', 'README.md', '001_first.sql'], ['001_first.sql']),
     ['002_second.sql']
   );
+});
+
+test('adopts scheduling migration only when its complete schema already exists', async () => {
+  const completeDb = { query: async (sql) => [sql.includes('columns') ? [{ count: 4 }] : [{ count: 1 }]] };
+  const partialDb = { query: async (sql) => [sql.includes('columns') ? [{ count: 1 }] : [{ count: 1 }]] };
+  assert.equal(await migrationAlreadyPresent(completeDb, '001_email_scheduling.sql'), true);
+  assert.equal(await migrationAlreadyPresent(partialDb, '001_email_scheduling.sql'), false);
+  assert.equal(await migrationAlreadyPresent(completeDb, '002_future.sql'), false);
 });

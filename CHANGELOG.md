@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.4.2] - 2026-07-15
+
+### Fixed
+- Startup now recognizes and records scheduling schema that existed before migration tracking was introduced.
+
 ## [1.4.1] - 2026-07-15
 
 ### Fixed
