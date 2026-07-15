@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Smart Email Automation</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <aside class="sidebar">
+        <a class="sidebar-brand" href="/dashboard"><span class="brand-mark">S</span><span>SendChap</span></a>
+        <p class="sidebar-label">Workspace</p>
+        <nav>
+            <a href="/dashboard" class="nav-link active" data-page="dashboard">Dashboard</a>
+            <a href="/dashboard#analytics" class="nav-link" data-page="analytics">Analytics</a>
+            <a href="/sms" class="nav-link" data-page="sms">SMS</a>
+            <a href="#" class="nav-link" data-page="settings">Settings</a>
+        </nav>
+        <p class="sidebar-foot">Campaign workspace<br>Securely connected</p>
+    </aside>
+    <div class="main-content">
+        <div class="container">
+            <header class="dashboard-header">
+                <div><p class="page-kicker">Overview</p><h1>Campaign dashboard</h1></div>
+                <div class="user-info">
+                    <span id="userName">Loading workspace...</span>
+                    <button id="logoutBtn" class="logout-btn">Logout</button>
+                </div>
+            </header>
+
+        <main class="dashboard-main">
+            <section class="campaign-section">
+                <div class="section-header">
+                        <div><p class="page-kicker">Outreach</p><h2>Email campaigns</h2></div>
+                    <button id="newCampaignBtn" class="primary-btn">New Campaign</button>
+                </div>
+
+                <div id="campaignsList" class="campaigns-list">
+                    <p>Loading campaigns...</p>
+                </div>
+            </section>
+
+            <section class="analytics-section" id="analytics">
+                <div class="section-header">
+                    <div><p class="page-kicker">Performance</p><h2>Email analytics</h2></div>
+                </div>
+
+                <div class="analytics-stats">
+                    <div class="stat-card">
+                        <h3>Messages sent</h3>
+                        <p id="totalSent">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Messages opened</h3>
+                        <p id="totalOpened">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Average open rate</h3>
+                        <p id="openRate">0%</p>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3>Sent and opened · Last 30 days</h3>
+                        <canvas id="timeChart"></canvas>
+                    </div>
+                    <!--<div class="chart-card">
+                        <h3>Open Status</h3>
+                        <canvas id="pieChart"></canvas>
+                    </div>-->
+                </div>
+            </section>
+        </main>
+        </div>
+    </div>
+
+    <!-- New Campaign Modal -->
+    <div id="campaignModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Campaign</h3>
+                <button type="button" class="close-modal" aria-label="Close campaign form">&times;</button>
+            </div>
+            <form id="campaignForm">
+                <div class="form-group">
+                    <label for="campaignSubject">Email Subject</label>
+                    <input type="text" id="campaignSubject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="campaignBody">Email Body</label>
+                    <textarea id="campaignBody" name="body" rows="8" required
+                        placeholder="Use {{Name}} and {{Email}} for personalization"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="csvFile">Upload CSV File</label>
+                    <input type="file" id="csvFile" name="csvFile" accept=".csv" required>
+                    <small>CSV should have columns: Name, Email</small>
+                </div>
+                <section id="campaignReview" class="campaign-review" hidden aria-live="polite">
+                    <div id="reviewStats" class="review-stats"></div>
+                    <div id="reviewIssues"></div>
+                    <div id="emailPreview" class="email-preview" hidden>
+                        <p class="preview-recipient"></p>
+                        <h4 class="preview-subject"></h4>
+                        <iframe title="Personalized email preview" sandbox=""></iframe>
+                    </div>
+                </section>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn close-modal">Cancel</button>
+                    <button type="button" id="testEmailBtn" class="btn-secondary">Send test to me</button>
+                    <button type="button" id="reviewCampaignBtn" class="btn-secondary">Review recipients</button>
+                    <button type="submit" id="createCampaignBtn" class="primary-btn" disabled>Create Campaign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

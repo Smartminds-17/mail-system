@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS Dashboard - Smart Email Automation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <a class="sidebar-brand" href="/dashboard"><span class="brand-mark">S</span><span>SendChap</span></a>
+        <p class="sidebar-label">Workspace</p>
+        <nav>
+            <a href="/dashboard" class="nav-link" data-page="dashboard">Dashboard</a>
+            <a href="/dashboard#analytics" class="nav-link" data-page="analytics">Analytics</a>
+            <a href="/sms" class="nav-link active" data-page="sms">SMS</a>
+            <a href="#" class="nav-link" data-page="settings">Settings</a>
+        </nav>
+        <p class="sidebar-foot">Campaign workspace<br>Securely connected</p>
+    </aside>
+    <div class="main-content">
+        <div class="container">
+            <header class="dashboard-header">
+                <div><p class="page-kicker">Messaging</p><h1>SMS campaigns</h1></div>
+                <div class="user-info">
+                    <span id="userName">Loading workspace...</span>
+                    <button id="logoutBtn" class="logout-btn">Logout</button>
+                </div>
+            </header>
+
+            <main class="dashboard-main">
+                <section class="campaign-section">
+                    <div class="section-header">
+                        <div><p class="page-kicker">Outreach</p><h2>Recent campaigns</h2></div>
+                        <button id="newSmsBtn" class="primary-btn">New SMS Campaign</button>
+                    </div>
+
+                    <div id="smsCampaignsList" class="campaigns-list">
+                        <p>Loading campaigns...</p>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- New SMS Modal -->
+    <div id="smsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New SMS Campaign</h3>
+                <button type="button" class="close-modal" aria-label="Close SMS campaign form">&times;</button>
+            </div>
+            <form id="smsForm">
+                <div class="form-group">
+                    <label for="smsSubject">SMS Subject</label>
+                    <input type="text" id="smsSubject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="smsBody">SMS Body</label>
+                    <textarea id="smsBody" name="body" rows="4" required maxlength="160"
+                        placeholder="Use {{Name}} for personalization"></textarea>
+                    <small>Max 160 characters</small>
+                </div>
+                <div class="form-group">
+                    <label for="csvFile">Upload CSV File</label>
+                    <input type="file" id="csvFile" name="csvFile" accept=".csv" required>
+                    <small>CSV should have columns: Name, Phone</small>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn close-modal">Cancel</button>
+                    <button type="submit" class="primary-btn">Create SMS</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create account — SendChap</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="auth-page">
+    <section class="auth-panel">
+      <a class="brand auth-brand" href="/"><span class="brand-mark">S</span><span>SendChap</span></a>
+      <div class="auth-form">
+        <p class="page-kicker">Start simply</p>
+        <h2>Create your workspace</h2>
+        <p class="auth-intro">Set up your account and create your first campaign.</p>
+        <form id="registerForm">
+          <div class="form-group">
+            <label for="name">Full name</label>
+            <input type="text" id="name" name="name" autocomplete="name" placeholder="Your name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" placeholder="Repeat your password" required>
+          </div>
+          <button type="submit" class="auth-button">Create account</button>
+        </form>
+        <p>Already have an account? <a href="/login">Sign in</a></p>
+      </div>
+    </section>
+    <aside class="auth-visual">
+      <div class="auth-quote">
+        <p>Every good campaign begins with a clear message and the right audience.</p>
+        <small>Personalize, send and learn from every interaction.</small>
+      </div>
+    </aside>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in — SendChap</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="auth-page">
+    <section class="auth-panel">
+      <a class="brand auth-brand" href="/"><span class="brand-mark">S</span><span>SendChap</span></a>
+      <div class="auth-form">
+        <p class="page-kicker">Welcome back</p>
+        <h2>Sign in to your workspace</h2>
+        <p class="auth-intro">Continue managing campaigns and recipient activity.</p>
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" required>
+          </div>
+          <button type="submit" class="auth-button">Sign in</button>
+        </form>
+        <p>New to SendChap? <a href="/register">Create an account</a></p>
+      </div>
+    </section>
+    <aside class="auth-visual">
+      <div class="auth-quote">
+        <p>“A clear campaign workspace turns communication into momentum.”</p>
+        <small>Email, SMS and engagement analytics—without the clutter.</small>
+      </div>
+    </aside>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
