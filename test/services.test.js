@@ -7,6 +7,7 @@ const { mapWithConcurrency } = require('../services/concurrency');
 const { inspectDomain, preflightRecipients } = require('../services/emailPreflight');
 const { campaignSummary } = require('../services/campaignSummary');
 const { analyzeRecipientRows } = require('../services/csvRecipients');
+const { canTransition, parseSchedule, runDueCampaigns } = require('../services/scheduling');
 
 test('escapes recipient data before inserting it into email HTML', () => {
   assert.equal(personalize('Hello {{Name}}', { name: '<script>alert(1)</script>' }), 'Hello &lt;script&gt;alert(1)&lt;/script&gt;');
@@ -116,4 +117,23 @@ test('limits validation issue details while preserving complete counts', () => {
   assert.equal(report.invalidRows, 25);
   assert.equal(report.issues.length, 20);
   assert.equal(report.truncatedIssues, 5);
+});
+
+test('validates scheduling times and lifecycle transitions', () => {
+  const now = new Date('2026-07-15T10:00:00Z');
+  assert.match(parseSchedule('2026-07-15T09:00:00Z', now).error, /future/);
+  assert.equal(parseSchedule('2026-07-15T11:00:00Z', now).value.toISOString(), '2026-07-15T11:00:00.000Z');
+  assert.equal(canTransition('draft', 'scheduled'), true);
+  assert.equal(canTransition('sent', 'scheduled'), false);
+});
+
+test('scheduler claims each due campaign before delivery', async () => {
+  const delivered = [];
+  const db = { async query(sql) {
+    if (sql.startsWith('SELECT id')) return [[{ id: 7 }]];
+    return [{ affectedRows: 1 }];
+  } };
+  const processed = await runDueCampaigns(db, async (_db, id) => delivered.push(id));
+  assert.equal(processed, 1);
+  assert.deepEqual(delivered, [7]);
 });

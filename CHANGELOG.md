@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0] - 2026-07-15
+
+### Added
+- Campaigns can be scheduled, sent immediately, or cancelled before sending.
+- A restart-safe scheduler claims due campaigns and records their final delivery state.
+- Campaign deletion now uses an accessible, branded confirmation dialog.
+
 ## [1.3.0] - 2026-07-15
 
 ### Added

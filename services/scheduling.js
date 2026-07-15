@@ -20,3 +20,27 @@ function canTransition(from, to) {
 }
 
 module.exports = { canTransition, parseSchedule };
+
+async function runDueCampaigns(db, deliver) {
+  const [jobs] = await db.query(
+    "SELECT id FROM email_jobs WHERE status = 'scheduled' AND scheduled_at <= NOW() ORDER BY scheduled_at LIMIT 10"
+  );
+  let processed = 0;
+  for (const job of jobs) {
+    const [claim] = await db.query(
+      "UPDATE email_jobs SET status = 'sending', started_at = NOW() WHERE id = ? AND status = 'scheduled'",
+      [job.id]
+    );
+    if (!claim.affectedRows) continue;
+    try {
+      await deliver(db, job.id);
+    } catch (error) {
+      await db.query("UPDATE email_jobs SET status = 'partially_failed', completed_at = NOW() WHERE id = ?", [job.id]);
+      console.error(`Scheduled campaign ${job.id} failed:`, error);
+    }
+    processed++;
+  }
+  return processed;
+}
+
+module.exports.runDueCampaigns = runDueCampaigns;

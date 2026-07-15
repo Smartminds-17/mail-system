@@ -203,6 +203,14 @@ router.post('/campaigns/:id/send', verifyToken, sendLimiter, async (req, res) =>
     }
 
     const job = jobs[0];
+    if (!['draft', 'scheduled'].includes(job.status || 'draft')) {
+      return res.status(409).json({ error: 'Campaign cannot be sent from its current state' });
+    }
+    const [claim] = await db.query(
+      "UPDATE email_jobs SET status = 'sending', started_at = NOW() WHERE id = ? AND user_id = ? AND status IN ('draft','scheduled')",
+      [jobId, userId]
+    );
+    if (!claim.affectedRows) return res.status(409).json({ error: 'Campaign is already being processed' });
 
     // Get recipients
     const [recipients] = await db.query(
@@ -263,6 +271,11 @@ router.post('/campaigns/:id/send', verifyToken, sendLimiter, async (req, res) =>
         failedCount++;
       }
     });
+
+    await db.query(
+      'UPDATE email_jobs SET status = ?, completed_at = NOW() WHERE id = ?',
+      [failedCount || skipped.length ? 'partially_failed' : 'sent', jobId]
+    );
 
     res.json({
       message: campaignSummary({

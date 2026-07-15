@@ -32,6 +32,8 @@ const authLimiter = rateLimit({
 
 // Database connection
 const { db, dbPromise, checkDatabaseConnection } = require('./db');
+const { runDueCampaigns } = require('./services/scheduling');
+const { deliverCampaign } = require('./services/campaignDelivery');
 
 // Routes
 const authRoutes = require('./routes/auth');
@@ -102,6 +104,16 @@ async function startServer() {
     validateCoreConfig(config);
     await checkDatabaseConnection();
     console.log('Connected to MySQL database');
+
+    const promiseDb = await dbPromise;
+    let schedulerRunning = false;
+    const scheduler = setInterval(async () => {
+      if (schedulerRunning) return;
+      schedulerRunning = true;
+      try { await runDueCampaigns(promiseDb, deliverCampaign); }
+      finally { schedulerRunning = false; }
+    }, 30000);
+    scheduler.unref();
 
     return app.listen(PORT, () => {
       console.log(`Server running on port http://localhost:${PORT}`);

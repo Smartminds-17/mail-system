@@ -117,6 +117,27 @@
         </div>
     </div>
 
+    <div id="confirmModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+        <div class="modal-content confirm-dialog">
+            <div class="danger-icon" aria-hidden="true">!</div>
+            <h3 id="confirmTitle">Delete campaign?</h3>
+            <p id="confirmMessage">This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button type="button" id="confirmCancel" class="cancel-btn">Keep campaign</button>
+                <button type="button" id="confirmDelete" class="btn-danger">Delete permanently</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="scheduleModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="scheduleTitle">
+        <div class="modal-content confirm-dialog">
+            <h3 id="scheduleTitle">Schedule campaign</h3>
+            <p>Choose when sending should begin in your local time.</p>
+            <div class="form-group"><label for="scheduleTime">Date and time</label><input id="scheduleTime" type="datetime-local" required></div>
+            <div class="modal-actions"><button type="button" id="scheduleCancel" class="cancel-btn">Cancel</button><button type="button" id="scheduleSave" class="primary-btn">Schedule</button></div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

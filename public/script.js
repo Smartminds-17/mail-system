@@ -161,11 +161,13 @@ async function loadDashboard() {
         campaignsList.innerHTML = campaigns.map(campaign => `
             <div class="campaign-card">
                 <div class="campaign-copy">
-                    <h3>${escapeHtml(campaign.subject)}</h3>
-                    <div class="campaign-meta">Created ${new Date(campaign.created_at).toLocaleDateString()}</div>
+                    <h3>${escapeHtml(campaign.subject)} <span class="campaign-status">${escapeHtml(campaign.status || 'draft')}</span></h3>
+                    <div class="campaign-meta">${campaign.status === 'scheduled' ? `Scheduled ${new Date(campaign.scheduled_at).toLocaleString()}` : `Created ${new Date(campaign.created_at).toLocaleDateString()}`}</div>
                 </div>
                 <div class="campaign-actions">
-                    <button class="btn-send" onclick="sendCampaign(${campaign.id})">Send Now</button>
+                    ${['draft', 'scheduled'].includes(campaign.status || 'draft') ? `<button class="btn-send" onclick="sendCampaign(${campaign.id})">Send Now</button>` : ''}
+                    ${['draft', 'scheduled'].includes(campaign.status || 'draft') ? `<button class="btn-secondary" onclick="scheduleCampaign(${campaign.id})">Schedule</button>` : ''}
+                    ${campaign.status === 'scheduled' ? `<button class="btn-secondary" onclick="cancelCampaign(${campaign.id})">Cancel schedule</button>` : ''}
                     <button class="btn-view" onclick="viewLogs(${campaign.id})">View Logs</button>
                     <button class="btn-danger" onclick="deleteCampaign(${campaign.id})">Delete</button>
                 </div>
@@ -326,7 +328,7 @@ async function sendCampaign(jobId) {
 
 // Delete campaign
 async function deleteCampaign(jobId) {
-    if (!confirm('Are you sure you want to delete this campaign? This action cannot be undone.')) return;
+    if (!await confirmDestructiveAction()) return;
 
     try {
         await apiCall(`/emails/campaigns/${jobId}`, { method: 'DELETE' });
@@ -335,6 +337,38 @@ async function deleteCampaign(jobId) {
     } catch (error) {
         showMessage('Error deleting campaign', 'error');
     }
+}
+
+function confirmDestructiveAction() {
+    const dialog = document.getElementById('confirmModal');
+    dialog.style.display = 'block';
+    document.getElementById('confirmCancel').focus();
+    return new Promise(resolve => {
+        const finish = value => { dialog.style.display = 'none'; resolve(value); };
+        document.getElementById('confirmCancel').onclick = () => finish(false);
+        document.getElementById('confirmDelete').onclick = () => finish(true);
+    });
+}
+
+function scheduleCampaign(jobId) {
+    const dialog = document.getElementById('scheduleModal');
+    const input = document.getElementById('scheduleTime');
+    dialog.style.display = 'block';
+    input.min = new Date(Date.now() + 60000).toISOString().slice(0, 16);
+    input.focus();
+    document.getElementById('scheduleCancel').onclick = () => { dialog.style.display = 'none'; };
+    document.getElementById('scheduleSave').onclick = async () => {
+        if (!input.reportValidity() || !input.value) return;
+        const response = await apiCall(`/emails/campaigns/${jobId}/schedule`, { method: 'POST', body: JSON.stringify({ scheduledAt: new Date(input.value).toISOString() }) });
+        showMessage(response.message || response.error, response.message ? 'success' : 'error');
+        if (response.message) { dialog.style.display = 'none'; loadDashboard(); }
+    };
+}
+
+async function cancelCampaign(jobId) {
+    const response = await apiCall(`/emails/campaigns/${jobId}/cancel`, { method: 'POST' });
+    showMessage(response.message || response.error, response.message ? 'success' : 'error');
+    if (response.message) loadDashboard();
 }
 
 // View logs
