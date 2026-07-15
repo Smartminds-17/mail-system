@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.4.3] - 2026-07-15
+
+### Fixed
+- Expired or invalid sessions now redirect to login instead of showing a campaign loading error.
+
 ## [1.4.2] - 2026-07-15
 
 ### Fixed

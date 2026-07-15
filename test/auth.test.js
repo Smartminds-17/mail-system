@@ -37,8 +37,8 @@ test('rejects an invalid token', async () => {
   const result = await runMiddleware('Bearer invalid-token');
 
   assert.equal(result.calledNext, false);
-  assert.equal(result.response.statusCode, 400);
-  assert.deepEqual(result.response.body, { error: 'Invalid token' });
+  assert.equal(result.response.statusCode, 401);
+  assert.deepEqual(result.response.body, { error: 'Invalid or expired token' });
 });
 
 test('accepts a valid token and exposes its claims', async () => {
